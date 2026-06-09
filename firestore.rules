@@ -1,0 +1,198 @@
+// ═══════════════════════════════════════════════════════════════════════════
+// FIREBASE FIRESTORE SECURITY RULES
+// Millennium Falcon Command Center
+//
+// DEPLOY WITH:
+//   firebase deploy --only firestore:rules
+//
+// These rules ensure:
+// - Only authenticated, approved users can read/write
+// - Only administrators can manage users
+// - All data remains private
+// ═══════════════════════════════════════════════════════════════════════════
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── HELPER FUNCTIONS ─────────────────────────────────────────────────
+
+    // Check if the request is from an authenticated user
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Check if user profile exists and is active
+    function isApprovedUser() {
+      return isAuthenticated() &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status == 'active';
+    }
+
+    // Check if user is an Administrator
+    function isAdmin() {
+      return isAuthenticated() &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'Administrator';
+    }
+
+    // Check if user is Lead Builder or higher
+    function isLeadOrAdmin() {
+      return isAuthenticated() &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['Administrator', 'Lead Builder'];
+    }
+
+    // Validate that a timestamp field exists and is a server timestamp
+    function hasValidTimestamp(field) {
+      return request.resource.data[field] == request.time;
+    }
+
+    // ── USER PROFILES ─────────────────────────────────────────────────────
+    // Users can read their own profile
+    // Only admins can create/update/delete user profiles
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow create: if isAdmin();
+      allow update: if isAdmin() || (
+        // Users can update their own non-privileged fields
+        request.auth.uid == userId &&
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'status'])
+      );
+      allow delete: if isAdmin();
+    }
+
+    // ── TASKS ─────────────────────────────────────────────────────────────
+    match /tasks/{taskId} {
+      allow read: if isApprovedUser();
+      allow create: if isApprovedUser();
+      allow update: if isApprovedUser();
+      allow delete: if isLeadOrAdmin();
+
+      // Task comments subcollection
+      match /comments/{commentId} {
+        allow read: if isApprovedUser();
+        allow create: if isApprovedUser();
+        allow update: if isApprovedUser() && request.auth.uid == resource.data.userId;
+        allow delete: if isAdmin();
+      }
+    }
+
+    // ── AREAS ─────────────────────────────────────────────────────────────
+    match /areas/{areaId} {
+      allow read: if isApprovedUser();
+      allow create: if isApprovedUser();
+      allow update: if isApprovedUser();
+      allow delete: if isLeadOrAdmin();
+    }
+
+    // ── BUILD MANUAL ──────────────────────────────────────────────────────
+    match /buildManual/{buildId} {
+      allow read: if isApprovedUser();
+      allow create: if isApprovedUser();
+      allow update: if isApprovedUser();
+      allow delete: if isLeadOrAdmin();
+    }
+
+    // ── INVENTORY ─────────────────────────────────────────────────────────
+    match /inventory/{itemId} {
+      allow read: if isApprovedUser();
+      allow create: if isApprovedUser();
+      allow update: if isApprovedUser();
+      allow delete: if isLeadOrAdmin();
+    }
+
+    // ── EXPENSES / BUDGET ─────────────────────────────────────────────────
+    match /expenses/{expenseId} {
+      allow read: if isApprovedUser();
+      allow create: if isApprovedUser();
+      allow update: if isApprovedUser();
+      allow delete: if isLeadOrAdmin();
+    }
+
+    // ── MEETINGS ──────────────────────────────────────────────────────────
+    match /meetings/{meetingId} {
+      allow read: if isApprovedUser();
+      allow create: if isApprovedUser();
+      allow update: if isApprovedUser();
+      allow delete: if isLeadOrAdmin();
+    }
+
+    // ── MILESTONES ────────────────────────────────────────────────────────
+    match /milestones/{milestoneId} {
+      allow read: if isApprovedUser();
+      allow create: if isApprovedUser();
+      allow update: if isApprovedUser();
+      allow delete: if isLeadOrAdmin();
+    }
+
+    // ── RISKS ─────────────────────────────────────────────────────────────
+    match /risks/{riskId} {
+      allow read: if isApprovedUser();
+      allow create: if isApprovedUser();
+      allow update: if isApprovedUser();
+      allow delete: if isLeadOrAdmin();
+    }
+
+    // ── LESSONS LEARNED ───────────────────────────────────────────────────
+    match /lessons/{lessonId} {
+      allow read: if isApprovedUser();
+      allow create: if isApprovedUser();
+      allow update: if isApprovedUser();
+      allow delete: if isLeadOrAdmin();
+    }
+
+    // ── KNOWLEDGE BASE ────────────────────────────────────────────────────
+    match /knowledge/{articleId} {
+      allow read: if isApprovedUser();
+      allow create: if isApprovedUser();
+      allow update: if isApprovedUser();
+      allow delete: if isLeadOrAdmin();
+    }
+
+    // ── PURCHASES ─────────────────────────────────────────────────────────
+    match /purchases/{purchaseId} {
+      allow read: if isApprovedUser();
+      allow create: if isApprovedUser();
+      allow update: if isApprovedUser();
+      allow delete: if isLeadOrAdmin();
+    }
+
+    // ── STORAGE BINS / QR ─────────────────────────────────────────────────
+    match /storageBins/{binId} {
+      allow read: if isApprovedUser();
+      allow create: if isApprovedUser();
+      allow update: if isApprovedUser();
+      allow delete: if isLeadOrAdmin();
+    }
+
+    // ── TIMING RECORDS ────────────────────────────────────────────────────
+    match /timingRecords/{recordId} {
+      allow read: if isApprovedUser();
+      allow create: if isApprovedUser();
+      allow update: if isApprovedUser();
+      allow delete: if isLeadOrAdmin();
+    }
+
+    // ── ACTIVITY LOG ──────────────────────────────────────────────────────
+    match /activity/{activityId} {
+      allow read: if isApprovedUser();
+      allow create: if isApprovedUser();
+      // Activity log is immutable — no updates or deletes except admin
+      allow update: if false;
+      allow delete: if isAdmin();
+    }
+
+    // ── SETTINGS ──────────────────────────────────────────────────────────
+    match /settings/{settingId} {
+      allow read: if isApprovedUser();
+      allow write: if isAdmin();
+    }
+
+    // ── DENY ALL ELSE ─────────────────────────────────────────────────────
+    // Any collection not listed above is denied
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

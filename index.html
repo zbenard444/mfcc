@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Millennium Falcon Command Center - Private Family Event Management" />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
+  <meta name="googlebot" content="noindex, nofollow" />
+  <meta name="theme-color" content="#0a0e1a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="MFCC" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/main.css" />
+  <title>MFCC — Millennium Falcon Command Center</title>
+</head>
+<body>
+  <!-- LOGIN SCREEN -->
+  <div id="login-screen" class="login-screen">
+    <div class="login-bg-grid"></div>
+    <div class="login-scanline"></div>
+    <div class="login-container">
+      <div class="login-logo">
+        <div class="logo-hex">
+          <svg viewBox="0 0 100 100" class="falcon-svg">
+            <polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5" fill="none" stroke="#00d4ff" stroke-width="1.5" opacity="0.4"/>
+            <polygon points="50,15 85,32.5 85,67.5 50,85 15,67.5 15,32.5" fill="none" stroke="#00d4ff" stroke-width="0.8" opacity="0.2"/>
+            <!-- Simplified Falcon silhouette -->
+            <ellipse cx="50" cy="52" rx="30" ry="14" fill="none" stroke="#00d4ff" stroke-width="1.5"/>
+            <ellipse cx="40" cy="48" rx="10" ry="7" fill="none" stroke="#00d4ff" stroke-width="1.2"/>
+            <line x1="20" y1="52" x2="50" y2="52" stroke="#00d4ff" stroke-width="1"/>
+            <line x1="50" y1="45" x2="50" y2="59" stroke="#00d4ff" stroke-width="1"/>
+            <circle cx="50" cy="52" r="3" fill="#00d4ff" opacity="0.7"/>
+            <circle cx="50" cy="52" r="6" fill="none" stroke="#00d4ff" stroke-width="0.8" opacity="0.5"/>
+          </svg>
+        </div>
+        <div class="login-title-block">
+          <span class="login-subtitle">MILLENNIUM FALCON</span>
+          <h1 class="login-title">COMMAND CENTER</h1>
+          <span class="login-version">CLASSIFIED — FAMILY ACCESS ONLY</span>
+        </div>
+      </div>
+
+      <div class="login-card">
+        <div class="login-card-header">
+          <span class="terminal-prompt">IDENTITY VERIFICATION REQUIRED</span>
+          <div class="blink-cursor"></div>
+        </div>
+        <div id="login-error" class="login-error hidden"></div>
+        <div class="login-form">
+          <div class="field-group">
+            <label class="field-label">OPERATOR EMAIL</label>
+            <input type="email" id="login-email" class="field-input" placeholder="enter.credentials@domain.com" autocomplete="email" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">ACCESS CODE</label>
+            <input type="password" id="login-password" class="field-input" placeholder="••••••••••••" autocomplete="current-password" />
+          </div>
+          <button id="login-btn" class="btn btn-primary btn-full">
+            <span class="btn-text">INITIATE ACCESS</span>
+            <span class="btn-loader hidden">AUTHENTICATING...</span>
+          </button>
+        </div>
+        <div class="login-footer">
+          <p>Access restricted to authorized personnel.<br/>Contact system administrator for access.</p>
+        </div>
+      </div>
+
+      <div class="login-pending hidden" id="pending-approval">
+        <div class="pending-icon">⏳</div>
+        <h3>AWAITING CLEARANCE</h3>
+        <p>Your account is pending administrator approval. Contact Zach for access.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN APP -->
+  <div id="app" class="app hidden">
+    <!-- SIDEBAR NAV -->
+    <nav id="sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <div class="s-logo-icon">
+            <svg viewBox="0 0 60 60" width="36" height="36">
+              <ellipse cx="30" cy="32" rx="20" ry="9" fill="none" stroke="#00d4ff" stroke-width="1.5"/>
+              <ellipse cx="24" cy="29" rx="7" ry="5" fill="none" stroke="#00d4ff" stroke-width="1.2"/>
+              <line x1="10" y1="32" x2="30" y2="32" stroke="#00d4ff" stroke-width="1"/>
+              <circle cx="30" cy="32" r="2.5" fill="#00d4ff" opacity="0.8"/>
+            </svg>
+          </div>
+          <div class="sidebar-title">
+            <span class="s-title-main">MFCC</span>
+            <span class="s-title-sub">Command Center</span>
+          </div>
+        </div>
+        <button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle sidebar">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+
+      <div class="sidebar-user">
+        <div class="user-avatar" id="nav-avatar">Z</div>
+        <div class="user-info">
+          <span class="user-name" id="nav-username">Loading...</span>
+          <span class="user-role" id="nav-role">—</span>
+        </div>
+      </div>
+
+      <div class="nav-section-label">COMMAND</div>
+      <ul class="nav-list">
+        <li><a href="#" class="nav-item active" data-page="dashboard"><span class="nav-icon">⬡</span><span class="nav-text">Dashboard</span></a></li>
+        <li><a href="#" class="nav-item" data-page="setup-command"><span class="nav-icon">🎯</span><span class="nav-text">Setup Command</span></a></li>
+        <li><a href="#" class="nav-item" data-page="event-day"><span class="nav-icon">⚡</span><span class="nav-text">Event Day Ops</span></a></li>
+      </ul>
+
+      <div class="nav-section-label">PLANNING</div>
+      <ul class="nav-list">
+        <li><a href="#" class="nav-item" data-page="tasks"><span class="nav-icon">✓</span><span class="nav-text">Tasks</span><span class="nav-badge" id="badge-tasks">0</span></a></li>
+        <li><a href="#" class="nav-item" data-page="areas"><span class="nav-icon">◈</span><span class="nav-text">Areas</span></a></li>
+        <li><a href="#" class="nav-item" data-page="build-manual"><span class="nav-icon">📋</span><span class="nav-text">Build Manual</span></a></li>
+        <li><a href="#" class="nav-item" data-page="meetings"><span class="nav-icon">◎</span><span class="nav-text">Meetings</span></a></li>
+        <li><a href="#" class="nav-item" data-page="milestones"><span class="nav-icon">◆</span><span class="nav-text">Milestones</span></a></li>
+        <li><a href="#" class="nav-item" data-page="risks"><span class="nav-icon">⚠</span><span class="nav-text">Risks</span></a></li>
+      </ul>
+
+      <div class="nav-section-label">RESOURCES</div>
+      <ul class="nav-list">
+        <li><a href="#" class="nav-item" data-page="inventory"><span class="nav-icon">◻</span><span class="nav-text">Inventory</span></a></li>
+        <li><a href="#" class="nav-item" data-page="budget"><span class="nav-icon">◈</span><span class="nav-text">Budget</span></a></li>
+        <li><a href="#" class="nav-item" data-page="purchases"><span class="nav-icon">🛒</span><span class="nav-text">Purchases</span></a></li>
+        <li><a href="#" class="nav-item" data-page="stopwatch"><span class="nav-icon">⏱</span><span class="nav-text">Build Timers</span></a></li>
+        <li><a href="#" class="nav-item" data-page="qr-codes"><span class="nav-icon">▦</span><span class="nav-text">QR Storage</span></a></li>
+      </ul>
+
+      <div class="nav-section-label">KNOWLEDGE</div>
+      <ul class="nav-list">
+        <li><a href="#" class="nav-item" data-page="lessons"><span class="nav-icon">◉</span><span class="nav-text">Lessons Learned</span></a></li>
+        <li><a href="#" class="nav-item" data-page="knowledge"><span class="nav-icon">◍</span><span class="nav-text">Knowledge Base</span></a></li>
+        <li><a href="#" class="nav-item" data-page="reports"><span class="nav-icon">◫</span><span class="nav-text">Reports</span></a></li>
+      </ul>
+
+      <div class="nav-section-label" id="admin-section-label" style="display:none">ADMIN</div>
+      <ul class="nav-list" id="admin-nav" style="display:none">
+        <li><a href="#" class="nav-item" data-page="users"><span class="nav-icon">◑</span><span class="nav-text">User Management</span></a></li>
+        <li><a href="#" class="nav-item" data-page="settings"><span class="nav-icon">⚙</span><span class="nav-text">Settings</span></a></li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <button id="logout-btn" class="btn-logout">
+          <span>⏻</span> LOGOUT
+        </button>
+        <div class="sync-status" id="sync-status">
+          <span class="sync-dot"></span>
+          <span class="sync-text">SYNCED</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- MAIN CONTENT AREA -->
+    <main id="main-content" class="main-content">
+      <div id="page-dashboard" class="page active"></div>
+      <div id="page-tasks" class="page"></div>
+      <div id="page-areas" class="page"></div>
+      <div id="page-build-manual" class="page"></div>
+      <div id="page-setup-command" class="page"></div>
+      <div id="page-event-day" class="page"></div>
+      <div id="page-inventory" class="page"></div>
+      <div id="page-budget" class="page"></div>
+      <div id="page-purchases" class="page"></div>
+      <div id="page-stopwatch" class="page"></div>
+      <div id="page-qr-codes" class="page"></div>
+      <div id="page-meetings" class="page"></div>
+      <div id="page-milestones" class="page"></div>
+      <div id="page-risks" class="page"></div>
+      <div id="page-lessons" class="page"></div>
+      <div id="page-knowledge" class="page"></div>
+      <div id="page-reports" class="page"></div>
+      <div id="page-users" class="page"></div>
+      <div id="page-settings" class="page"></div>
+    </main>
+  </div>
+
+  <!-- GLOBAL MODAL -->
+  <div id="modal-overlay" class="modal-overlay hidden">
+    <div id="modal-box" class="modal-box">
+      <div class="modal-header">
+        <h3 id="modal-title">Modal Title</h3>
+        <button id="modal-close" class="modal-close">✕</button>
+      </div>
+      <div id="modal-body" class="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATIONS -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- OFFLINE BANNER -->
+  <div id="offline-banner" class="offline-banner hidden">
+    ⚡ OFFLINE MODE — Changes will sync when connection restored
+  </div>
+
+  <!-- FIREBASE SDKs -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+      from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+    import { getFirestore, collection, doc, getDoc, setDoc, addDoc, updateDoc, deleteDoc,
+      onSnapshot, query, where, orderBy, limit, serverTimestamp, getDocs, writeBatch, increment }
+      from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+    // ── FIREBASE CONFIG ──────────────────────────────────────────────────────
+    // REPLACE these values with your actual Firebase project config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDBgc_IFT3Brqb3sE4-COxtn3TyJX8Y-6k",
+      authDomain: "millennium-falcon-cc.firebaseapp.com",
+      projectId: "millennium-falcon-cc",
+      storageBucket: "millennium-falcon-cc.firebasestorage.app",
+      messagingSenderId: "887071466560",
+      appId: "1:887071466560:web:37af6d037e8eda362faba5"
+    };
+
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Expose to window for module access
+    window.__firebase = { auth, db, signInWithEmailAndPassword, signOut,
+      onAuthStateChanged, collection, doc, getDoc, setDoc, addDoc, updateDoc,
+      deleteDoc, onSnapshot, query, where, orderBy, limit, serverTimestamp,
+      getDocs, writeBatch, increment };
+
+    // Boot app
+    const script = document.createElement('script');
+    script.src = 'js/app.js';
+    script.type = 'module';
+    document.body.appendChild(script);
+  </script>
+</body>
+</html>
